@@ -1,16 +1,16 @@
-import UIKit
+import UIKit // Import the UIKit framework for app-level functionality
 
-@main
-class AppDelegate: UIResponder, UIApplicationDelegate {
-    func application(_ application: UIApplication,
-                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        Game.shared.boot()
-        return true
+@main // Indicates this is the program entry point
+class AppDelegate: UIResponder, UIApplicationDelegate { // Handles high-level app events
+    func application(_ application: UIApplication, // Called when the app has finished launching
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool { // Launch parameters
+        Game.shared.boot() // Initialize core game services
+        return true // Signal successful launch
     }
 
-    func application(_ application: UIApplication,
-                     configurationForConnecting connectingSceneSession: UISceneSession,
-                     options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-        UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
+    func application(_ application: UIApplication, // Called when creating a new scene session
+                     configurationForConnecting connectingSceneSession: UISceneSession, // The session to configure
+                     options: UIScene.ConnectionOptions) -> UISceneConfiguration { // Additional creation options
+        UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role) // Return default scene setup
     }
-}
+} // End of AppDelegate
