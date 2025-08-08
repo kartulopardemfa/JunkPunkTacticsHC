@@ -162,7 +162,11 @@ final class CombatScene: SKScene {
     private func passiveAcc() -> Double {
         var acc: Double = 0
         for p in game.player.inventory.slotted where p.kind == .passive {
-            for t in p.tags { if t.hasPrefix("acc:") { acc += Double(t.split(separator: ":")[1]) ?? 0 } }
+            for t in p.tags {
+                if t.hasPrefix("acc:"), let v = Double(String(t.split(separator: ":")[1])) {
+                    acc += v
+                }
+            }
         }
         return acc
     }
@@ -231,9 +235,15 @@ final class CombatScene: SKScene {
         var mult = 1.0 + game.meta.dmgBonus
         for p in game.player.inventory.slotted where p.kind == .passive {
             for t in p.tags {
-                if t.hasPrefix("acc:") { acc += Double(t.split(separator: ":")[1]) ?? 0 }
-                if t.hasPrefix("crit:") { crit += Double(t.split(separator: ":")[1]) ?? 0 }
-                if t.hasPrefix("dmg:") { mult += Double(t.split(separator: ":")[1]) ?? 0 }
+                if t.hasPrefix("acc:"), let v = Double(String(t.split(separator: ":")[1])) {
+                    acc += v
+                }
+                if t.hasPrefix("crit:"), let v = Double(String(t.split(separator: ":")[1])) {
+                    crit += v
+                }
+                if t.hasPrefix("dmg:"), let v = Double(String(t.split(separator: ":")[1])) {
+                    mult += v
+                }
             }
         }
         return (acc.clamped(0.05, 0.98), crit.clamped(0.0, 0.5), mult)
@@ -269,14 +279,19 @@ final class CombatScene: SKScene {
             if doCrit { hitFlash() }
 
             if let s = w.special {
-                if s.hasPrefix("bleed:") { enemy.bleedTurns = max(enemy.bleedTurns, Int(s.split(separator: ":")[1]) ?? 0) }
-                if s.hasPrefix("jam:") { enemy.jamNext = max(enemy.jamNext, Double(s.split(separator: ":")[1]) ?? 0) }
+                if s.hasPrefix("bleed:"), let v = Int(String(s.split(separator: ":")[1])) {
+                    enemy.bleedTurns = max(enemy.bleedTurns, v)
+                }
+                if s.hasPrefix("jam:"), let v = Double(String(s.split(separator: ":")[1])) {
+                    enemy.jamNext = max(enemy.jamNext, v)
+                }
             }
-            if let jam = heroTraits.first(where: { $0.hasPrefix("jamOnHit:") }) {
-                enemy.jamNext = max(enemy.jamNext, Double(jam.split(separator: ":")[1]) ?? 0)
+            if let jam = heroTraits.first(where: { $0.hasPrefix("jamOnHit:") }),
+               let v = Double(String(jam.split(separator: ":")[1])) {
+                enemy.jamNext = max(enemy.jamNext, v)
             }
-            if let heal = heroTraits.first(where: { $0.hasPrefix("healOnHit:") }) {
-                let v = Int(heal.split(separator: ":")[1]) ?? 0
+            if let heal = heroTraits.first(where: { $0.hasPrefix("healOnHit:") }),
+               let v = Int(String(heal.split(separator: ":")[1])) {
                 game.player.hp = min(game.player.maxHP, game.player.hp + v)
             }
 
@@ -285,12 +300,13 @@ final class CombatScene: SKScene {
             updateHPBars()
 
             if enemy.hp <= 0 {
-                if let perk = heroTraits.first(where: { $0.hasPrefix("apPerKill:") }) {
-                    game.player.currentAP += Int(perk.split(separator: ":")[1]) ?? 0
+                if let perk = heroTraits.first(where: { $0.hasPrefix("apPerKill:") }),
+                   let v = Int(String(perk.split(separator: ":")[1])) {
+                    game.player.currentAP += v
                     apLabel.text = "AP \(game.player.currentAP)"
                 }
-                if let perk = heroTraits.first(where: { $0.hasPrefix("healOnKill:") }) {
-                    let v = Int(perk.split(separator: ":")[1]) ?? 0
+                if let perk = heroTraits.first(where: { $0.hasPrefix("healOnKill:") }),
+                   let v = Int(String(perk.split(separator: ":")[1])) {
                     game.player.hp = min(game.player.maxHP, game.player.hp + v)
                 }
                 enemyDiesCoinRain()

@@ -78,10 +78,18 @@ struct Player: Codable, Equatable {
             inventory: Inventory(active: Array(actives.prefix(2)), slotted: [], bag: Array(items.prefix(8)), maxSlots: 6)
         )
         for t in hero.traits {
-            if t.hasPrefix("startAP:") { p.baseAP += Int(Double(t.split(separator: ":")[1]) ?? 0) }
-            if t.hasPrefix("startBlock:") { p.block += Int(Double(t.split(separator: ":")[1]) ?? 0) }
-            if t.hasPrefix("acc:") { p.baseAcc += Double(t.split(separator: ":")[1]) ?? 0 }
-            if t.hasPrefix("crit:") { p.baseCrit += Double(t.split(separator: ":")[1]) ?? 0 }
+            if t.hasPrefix("startAP:"), let v = Double(String(t.split(separator: ":")[1])) {
+                p.baseAP += Int(v)
+            }
+            if t.hasPrefix("startBlock:"), let v = Double(String(t.split(separator: ":")[1])) {
+                p.block += Int(v)
+            }
+            if t.hasPrefix("acc:"), let v = Double(String(t.split(separator: ":")[1])) {
+                p.baseAcc += v
+            }
+            if t.hasPrefix("crit:"), let v = Double(String(t.split(separator: ":")[1])) {
+                p.baseCrit += v
+            }
         }
         p.currentAP = p.baseAP
         return p
